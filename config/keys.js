@@ -1,4 +1,4 @@
 module.exports = {
-  mongoURI: 'mongodb://riskmangement:zsls123321@ds123434.mlab.com:23434/riskmangement',
+  mongoURI: 'mongodb://localhost:27017/risk-prevent-mangment',
   secretOrKey: 'secret'
 };

@@ -68,15 +68,14 @@
                             ref="upload1"
                             :file-list="imageList1"
                             :class="{disabled:uploadDisabled1}"
-                            :on-change="uploadChange1"
                             :on-remove="handleRemove1"
                             :on-preview="handlePictureCardPreview"
                             :http-request="uploadImage1"
-                
+                            :limit="1"
                             list-type="picture-card">
                             <i class="el-icon-plus"></i>
                           </el-upload>                      
-                          <el-input  v-model="form.image1"/>
+                          <!-- <el-input  v-model="form.image1"/> -->
                     </el-form-item>
 
                     <el-form-item prop='image2' v-model="form.image2" label="整改后图片:">
@@ -85,15 +84,14 @@
                             ref="upload2"
                             :file-list="imageList2"                           
                             :class="{disabled:uploadDisabled2}"
-                            :on-change="uploadChange2"
                             :on-remove="handleRemove2"
                             :on-preview="handlePictureCardPreview"
                             :http-request="uploadImage2"
-                           
+                            :limit="1"
                             list-type="picture-card">
                             <i class="el-icon-plus"></i>
                           </el-upload> 
-                          <el-input  v-model="form.image2" /> 
+                          <!-- <el-input  v-model="form.image2" />  -->
                         <el-dialog :visible.sync="dialogVisible">
                           <img width="100%" :src="dialogImageUrl" alt="">
                         </el-dialog>  
@@ -121,36 +119,12 @@ export default {
     dialog: Object,
     form: Object,
   },
-   computed:{
-     imageList1: function(){
-       if(this.isEmpty(this.form.image1)){
-         return []
-       }else{
-         return [{url:this.form.image1}]
-       }
-     },
-     imageList2: function(){
-       if(this.isEmpty(this.form.image2)){
-         return []
-       }else{
-         return [{url:this.form.image2}]
-       }
-     },
-    // uploadDisabled1: function(){
-    //   return !this.isEmpty(this.form.image1)
-    // },
-    // uploadDisabled2: function(){
-    //   return !this.isEmpty(this.form.image2)
-    // }
-   },
   data() {
     return {
       dialogImageUrl: '',
       dialogVisible: false,
       imageIslive1: false,
       imageIslive2: false,
-      uploadDisabled1:false,
-      uploadDisabled2:false,
       //imageList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
       format_place_list: [
         "增压西站",
@@ -177,35 +151,41 @@ export default {
       
     };
   },
-  methods: {
-    uploadChange1(file){
-      console.log("chang1");
-      // let reader = new FileReader();
-      // const _this = this;
-      // reader.onload = function(){
-      //   _this.form.image1=this.result;
-      //   _this.imageIslive1 = true
-      // };
-      // reader.readAsDataURL(file);
-      return this.uploadDisabled1=!this.uploadDisabled1;
-      
+  computed:{
+    imageList1: function(){
+       if(this.isEmpty(this.form.image1)){
+         console.log("no");
+         return []
+       }else{
+         console.log("have");
+         return [{url:this.form.image1}]
+       }
+     },
+     imageList2: function(){
+       if(this.isEmpty(this.form.image2)){
+         return []
+       }else{
+         return [{url:this.form.image2}]
+       }
+     },
+
+    uploadDisabled1: function(){
+      return this.imageList1.length > 0
     },
-    uploadChange2(file){
-      console.log("chang2");
-      // let reader = new FileReader();
-      // const _this = this;
-      // reader.onload = function(){
-      //   _this.form.image1=this.result;
-      //   _this.imageIslive1 = true
-      // };
-      // reader.readAsDataURL(file);
-      return this.uploadDisabled2=!this.uploadDisabled2;
-      
+    uploadDisabled2: function(){
+      return this.imageList2.length > 0
     },
-    // handleRemove1(file, fileList) {
-    //     console.log(file, fileList);
-    //     console.log(this.imageList);
-    //   },
+  },
+  methods: {  
+    handleRemove1(file, fileList){
+      this.form.image1 = ""
+      this.imageList1 = fileList;
+    },
+    handleRemove2(file, fileList){
+      this.form.image2 = ""
+      this.imageList2 = fileList;
+    },
+    
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
@@ -233,15 +213,6 @@ export default {
           });
         }
       });
-    },
-
-    handleRemove1(){
-      this.form.image1 = ""
-      this.uploadDisabled1 = false;
-    },
-    handleRemove2(){
-      this.form.image2 = ""
-      this.uploadDisabled2 = false;
     },
 
     uploadImage1(params){

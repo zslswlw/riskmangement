@@ -5,7 +5,7 @@
                 :inline="true"
                 ref="search_data" 
                 :model='search_data' >
-                <el-form-item label="投标时间筛选:">
+                <el-form-item label="完成时限筛选:">
                     <el-date-picker
                         v-model="search_data.startTime"
                         type="datetime"
@@ -110,10 +110,11 @@
                     width="220">
                     <template slot-scope="scope">  
                       <div class="cell_img">
-                        <img :src= scope.row.image1 alt=""  width="200" height="150"/>
+                        <img :src= scope.row.image1 alt=""  width="200" height="150" @dblclick="handlerPicturePreview1(scope.row)"/>
                       </div>    
                     </template>
                 </el-table-column>
+
                 <el-table-column
                     prop="image2"
                     label="整改后图片"
@@ -121,7 +122,7 @@
                     width="220">
                     <template slot-scope="scope">  
                       <div class="cell_img">
-                        <img :src= scope.row.image2 alt=""  width="200" height="150"/>
+                        <img :src= scope.row.image2 alt=""  width="200" height="150" @dblclick="handlerPicturePreview2(scope.row)"/>
                       </div>    
                     </template>
                 </el-table-column>
@@ -171,6 +172,9 @@
                 </el-col>
             </el-row>
         </div>
+        <el-dialog :visible.sync ="dialogVisible">
+          <img width="100%" :src = "dialogImageUrl" alt="">
+        </el-dialog>
         <!-- 弹框页面 -->
         <DialogFound :dialog='dialog' :form='form' @update="getProfile"></DialogFound>
     </div>
@@ -186,6 +190,8 @@ export default {
       tableData: [],
       allTableData: [],
       filterTableData: [],
+      dialogVisible: false,
+      dialogImageUrl: '',
       dialog: {
         show: false,
         title: "",
@@ -227,6 +233,16 @@ export default {
     this.getProfile();
   },
   methods: {
+    handlerPicturePreview1(row){
+      console.log(row);
+      this.dialogImageUrl = row.image1;
+      this.dialogVisible = true;
+    },
+    handlerPicturePreview2(row){
+      console.log(row);
+      this.dialogImageUrl = row.image2;
+      this.dialogVisible = true;
+    },
     getProfile() {
       // 获取表格数据
       this.$axios("/api/profiles").then(res => {
@@ -259,7 +275,7 @@ export default {
         remark: row.remark,
         id: row._id
       };
-      console.log(this.form.image1);
+      //console.log(this.form.image1);
     },
     onDeleteRisk(row, index) {
       // 删除
